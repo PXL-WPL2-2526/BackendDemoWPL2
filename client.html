@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Student Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+        }
+
+        input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add Student</h2>
+
+<input type="text" id="firstName" placeholder="First Name">
+<input type="text" id="lastName" placeholder="Last Name">
+
+<button onclick="addStudent()">Add Student</button>
+
+<div id="message"></div>
+
+<h2>Students</h2>
+<ul id="studentList"></ul>
+
+<script>
+    const baseUrl = "https://localhost:7242/api/Students";
+
+    async function addStudent() {
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const message = document.getElementById("message");
+
+        if (!firstName || !lastName) {
+            message.textContent = "Both fields are required.";
+            message.style.color = "red";
+            return;
+        }
+
+        try {
+            const response = await fetch(baseUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName
+                })
+            });
+
+            if (response.ok) {
+                message.textContent = "Student added successfully!";
+                message.style.color = "green";
+
+                document.getElementById("firstName").value = "";
+                document.getElementById("lastName").value = "";
+
+                loadStudents();
+            } else {
+                message.textContent = "Error adding student.";
+                message.style.color = "red";
+            }
+        } catch (error) {
+            message.textContent = "Could not connect to API.";
+            message.style.color = "red";
+        }
+    }
+
+    async function loadStudents() {
+        const list = document.getElementById("studentList");
+        list.innerHTML = "";
+
+        try {
+            const response = await fetch(baseUrl);
+            const students = await response.json();
+
+            students.rows.forEach(student => {
+                const li = document.createElement("li");
+                li.textContent = `${student.firstName} ${student.lastName}`;
+                list.appendChild(li);
+            });
+        } catch {
+            list.innerHTML = "<li>Could not load students.</li>";
+        }
+    }
+
+    loadStudents();
+</script>
+
+</body>
+</html>
