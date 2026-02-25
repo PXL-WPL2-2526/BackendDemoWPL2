@@ -32,7 +32,6 @@ namespace Demo.Application.Services
             return selectResult;
         }
 
-        
         public InsertResult AddStudent(string firstName, string lastName)
         {
             InsertResult insertResult = new InsertResult();
@@ -46,6 +45,20 @@ namespace Demo.Application.Services
                 insertResult.Errors.Add(ex.Message);
             }
             return insertResult;
+        }
+
+        public DeleteResult DeleteStudent(int id)
+        {
+            DeleteResult deleteResult = new DeleteResult();
+            try
+            {
+                _repository.Remove(id);
+            }
+            catch (Exception ex)
+            {
+                deleteResult.Errors.Add(ex.Message);
+            }
+            return deleteResult;
         }
     }
 }

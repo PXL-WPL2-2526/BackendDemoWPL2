@@ -9,6 +9,11 @@
         public DateTime? GraduationDate { get; set; }
 
         public Student() { }
+        public Student(string firstName, string lastName)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
 
         public override string ToString()
         {

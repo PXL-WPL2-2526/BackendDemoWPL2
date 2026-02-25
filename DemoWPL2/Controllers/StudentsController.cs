@@ -21,5 +21,19 @@ namespace Demo.WebApi.Controllers
         {
             return Ok(_service.GetStudents());
         }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] Student student)
+        {
+            _service.AddStudent(student.FirstName, student.LastName);
+            return Ok();
+        }
+
+        [HttpPost("delete")]
+        public IActionResult Delete(int id)
+        {
+            _service.DeleteStudent(id);
+            return Ok();
+        }
     }
 }
